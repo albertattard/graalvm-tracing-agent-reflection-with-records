@@ -1,0 +1,15 @@
+--- ./build/generated/main/resources/META-INF/native-image/reflect-config.json	2023-01-22 19:48:44
++++ ./src/patch/META-INF/native-image/reflect-config.json	2023-01-22 19:48:26
+@@ -12,7 +12,11 @@
+   "allDeclaredFields":true,
+   "queryAllDeclaredMethods":true,
+   "queryAllDeclaredConstructors":true,
+-  "methods":[{"name":"<init>","parameterTypes":["java.lang.String","java.lang.String"] }]
++  "methods":[
++    {"name":"<init>","parameterTypes":["java.lang.String","java.lang.String"] },
++    {"name":"quote","parameterTypes":[] },
++    {"name":"author","parameterTypes":[] }
++  ]
+ },
+ {
+   "name":"java.lang.Class",

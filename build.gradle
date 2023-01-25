@@ -1,0 +1,42 @@
+plugins {
+    id 'application'
+}
+
+application {
+    mainClass = 'demo.Main'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+        vendor = JvmVendorSpec.GRAAL_VM
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.1'
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ['-Xlint:all']
+}
+
+tasks.named('jar', org.gradle.jvm.tasks.Jar) {
+    archiveBaseName = 'app'
+    manifest {
+        attributes 'Main-Class': application.mainClass
+        attributes 'Automatic-Module-Name': 'tracing-agent-reflection'
+    }
+}
+
+tasks.register('package', Copy) {
+    dependsOn 'jar'
+    into buildDir
+    into('libs') {
+        from configurations.runtimeClasspath
+    }
+}
