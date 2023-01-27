@@ -117,6 +117,14 @@ Technology stack used
     --class-path './build/libs/*' \
     '-agentlib:native-image-agent=config-output-dir=./build/generated/main/resources/META-INF/native-image' \
     demo.Main
+  Quote[author=Albert Einstein, quote=Learn from yesterday, live for today, hope for tomorrow. The important thing is not to stop questioning.]
+  ```
+
+  Note that GraalVM is required for the above command to work, otherwise you will get an error similar to the following.
+
+  ```
+  Error occurred during initialization of VM
+  ...
   ```
 
   List the generated configuration
@@ -325,3 +333,58 @@ Technology stack used
   $ './build/native/nativeCompile/app'
   Quote[author=Albert Einstein, quote=Learn from yesterday, live for today, hope for tomorrow. The important thing is not to stop questioning.]
   ```
+
+## Using a class instead
+
+Recreated the `Quote` record as a traditional class, with the same method
+interface.
+
+```java
+package demo;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.Objects;
+
+public class Quote {
+    private final String author;
+    private final String quote;
+
+    @JsonCreator
+    public Quote(@JsonProperty("author") String author, @JsonProperty("quote") String quote) {
+        this.author = author;
+        this.quote = quote;
+    }
+
+    public String author() {
+        return author;
+    }
+
+    public String quote() {
+        return quote;
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        final Quote other = (Quote) object;
+        return Objects.equals(author, other.author)
+                && Objects.equals(quote, other.quote);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(author, quote);
+    }
+
+    @Override
+    public String toString() {
+        return "Quote[author=%s, quote=%s]".formatted(author, quote);
+    }
+}
+```
+
+While the same `reflect-config.json` file is created, that is, with just the
+constructor, the class version works.
